@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-u$s!=2ph+y=xrvqyvwnr4-2&9(u0i&9ut=-(t#jrml!$e5#u2@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,12 +41,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
     'turnosApp',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -80,6 +82,9 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
 }
 
 SIMPLE_JWT = {
@@ -89,6 +94,21 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    'http://192.168.100.8:8081'
+]
+
+CORS_ALLOW_HEADERS = [
+    'access-control-allow-origin',
+    'content-type',
+]
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'POST',
+]
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

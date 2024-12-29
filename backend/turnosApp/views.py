@@ -13,6 +13,10 @@ from .models import Bussines, Reserva
 
 # User
 
+@api_view(['GET'])
+def prueba(request):
+    return Response({'data': 'the request has succesfuly'}, status=status.HTTP_200_OK)
+
 
 @api_view(['POST'])
 def register(request):
