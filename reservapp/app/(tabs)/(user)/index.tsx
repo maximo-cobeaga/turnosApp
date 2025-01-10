@@ -1,12 +1,31 @@
-import {View, Text, StyleSheet, Pressable, SafeAreaView} from 'react-native'
-import {Link} from 'expo-router'
+import React, {useEffect} from 'react'
+import {View, Text, StyleSheet, Pressable, SafeAreaView, Alert} from 'react-native'
+import {useRouter} from 'expo-router'
+import * as SecureStore from 'expo-secure-store'
 // COMPONENTS
-import {LogInForm} from '../../../components/login/LogInForm'
 
 export default function index() {
-  return (
+    const router = useRouter()
+
+    useEffect(() => {
+        const checkLogIn = async () => {
+            const access = await SecureStore.getItemAsync('access')
+        }
+        checkLogIn()
+    },[])
+
+    const logOut = async () => {
+        await SecureStore.deleteItemAsync('access')
+        Alert.alert('Exito!', 'Se cerro sesion correctamente')
+        router.replace('/login')
+    }
+
+    return (
     <SafeAreaView style={styles.container}>
-        <LogInForm />
+            <Text>El usuario inicio sesion</Text>
+            <Pressable onPress={logOut}>
+                <Text style={styles.button}>Cerrar sesion</Text>
+            </Pressable>
     </SafeAreaView>
   )
 }
@@ -14,14 +33,14 @@ export default function index() {
 const styles = StyleSheet.create({
     container : {
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
     }, 
-    tittle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    Button: {
-        backgroundColor: '#4DA1A9'
+    button: {
+        backgroundColor: 'red',
+        color: 'white',
+        padding: 10,
+        height: 40,
+        borderRadius:10,
     }
 })

@@ -9,16 +9,35 @@ from .serializers import CustomUserSerializers, ReservasSerializers, BussinesSer
 from .models import Bussines, Reserva
 # Create your views here.
 
-# User
+# Logica de negocios
 
 @api_view(['GET'])
 def prueba(request):
     return Response({'data': 'the request has succesfuly'}, status=status.HTTP_200_OK)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_books(request):
+    user = request.user
+    reservas = Reserva.objects.filter(usuario=user)
+    serializer = ReservasSerializers(reservas, many=True)
+    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_bussines(request):
+    bussines = Bussines.objects.all()
+    serializer = BussinesSerializers(bussines, many=True, context={'request': request})
+    return Response({'bussines': serializer.data}, status=status.HTTP_200_OK)
+
+# Gestion de usuarios
+
 @api_view(['POST'])
 def register(request):
     serializer = CustomUserSerializers(data=request.data)
+    print(request.data)
     if serializer.is_valid():
         try:
             serializer.save()
@@ -46,21 +65,3 @@ def log_out(request):
 def profile(request):
     user = CustomUserSerializers(data=request.data)
     return Response
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_books(request):
-    user = request.user
-    reservas = Reserva.objects.filter(usuario=user)
-    serializer = ReservasSerializers(reservas, many=True)
-    return Response({'data': serializer.data}, status=status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_bussines(request):
-    print(request)
-    bussines = Bussines.objects.all()
-    serializer = BussinesSerializers(bussines, many=True)
-    return Response({'bussines': serializer.data}, status=status.HTTP_200_OK)

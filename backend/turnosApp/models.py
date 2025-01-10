@@ -72,13 +72,14 @@ class Categoria(models.Model):
 
 class Bussines(models.Model):
     nombre = models.CharField(max_length=100, null=False, blank=False)
+    image = models.ImageField(upload_to='bussines_pic', default='bussimes_pic/default.jpg')
     codigo_postal = models.IntegerField(null=False, blank=False)
     categoria = models.ForeignKey(
         Categoria, related_name='bussines', on_delete=models.CASCADE, null=False, blank=False)
     direccion = models.CharField(max_length=150)
 
     def __str__(self):
-        return self.titulo
+        return self.nombre
 
 
 class Servicio(models.Model):

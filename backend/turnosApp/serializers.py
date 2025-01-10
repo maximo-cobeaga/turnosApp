@@ -1,22 +1,11 @@
-from datetime import timezone
+from django.template.context_processors import request
+from django.utils import timezone
 
 from rest_framework import serializers
-from django.contrib.auth.models import User
 from .models import Reserva, Bussines, CustomUser
 
 
-class BussinesSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Bussines
-        fields = ['id', 'nombre', 'codigo_postal', 'categoria', 'direccion']
-
-
-class UserSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'email']
-
-
+# Usurios
 class CustomUserSerializers(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -36,10 +25,21 @@ class CustomUserSerializers(serializers.ModelSerializer):
         return user
 
 
-class RegisterUserSerializer(serializers.ModelSerializer):
+
+# Logica de negocios
+
+class BussinesSerializers(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        request = self.context.get('request')
+        if obj.image:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+
     class Meta:
-        model = User
-        fields = ('nombre', 'apellido', 'email', 'numero', 'nacimiento','password')
+        model = Bussines
+        fields = ['id', 'nombre', 'codigo_postal', 'categoria', 'direccion', 'image']
 
 
 class ReservasSerializers(serializers.ModelSerializer):

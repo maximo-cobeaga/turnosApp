@@ -1,23 +1,16 @@
-import {Stack} from 'expo-router'
+import {Tabs} from 'expo-router'
 
 export default function UserLayout() {
   return (
-    <Stack>
-        <Stack.Screen 
+    <Tabs>
+        <Tabs.Screen 
             name='index'
             options={{
                 headerShown:false,
+                tabBarStyle:{
+                  display:'none'
+                }
               }}/>
-        <Stack.Screen 
-            name='login'
-            options={{
-                headerShown:false,
-            }}/>
-        <Stack.Screen 
-            name='register'
-            options={{
-                headerShown:false,
-            }}/>
-    </Stack>
+    </Tabs>
   )
 }
