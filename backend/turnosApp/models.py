@@ -3,6 +3,8 @@ from django.core.validators import RegexValidator
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+import requests
+
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -77,6 +79,20 @@ class Bussines(models.Model):
     categoria = models.ForeignKey(
         Categoria, related_name='bussines', on_delete=models.CASCADE, null=False, blank=False)
     direccion = models.CharField(max_length=150)
+    latitud = models.FloatField(default=0)
+    longitud = models.FloatField(default=0)
+
+    def save(self, *args, **kwargs):
+        key = 'AIzaSyAuAytAMqDEqaxiD07qxQt1fsfjMRhkSIU'
+        dir_format = self.direccion.replace(' ', '+')
+        response = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={dir_format}&key={key}')
+        if response.status_code == 200:
+            location = response.json()['results'][0]['geometry']['location']
+            self.longitud = location['lng']
+            self.latitud = location['lat']
+
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.nombre

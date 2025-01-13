@@ -5,7 +5,7 @@ from .models import Categoria, Servicio, Prestador, Reserva, Bussines, CustomUse
 
 
 class BussinesAdminModel(admin.ModelAdmin):
-    list_display = ['nombre', 'codigo_postal', 'categoria', 'direccion']
+    list_display = ['nombre', 'codigo_postal', 'latitud', 'categoria', 'direccion']
 
 
 class CategoriaAdmin(admin.ModelAdmin):
