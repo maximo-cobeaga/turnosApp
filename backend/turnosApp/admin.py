@@ -5,7 +5,7 @@ from .models import Categoria, Servicio, Prestador, Reserva, Bussines, CustomUse
 
 
 class BussinesAdminModel(admin.ModelAdmin):
-    list_display = ['nombre', 'codigo_postal', 'latitud', 'categoria', 'direccion']
+    list_display = ['id', 'nombre', 'codigo_postal', 'latitud', 'categoria', 'direccion']
 
 
 class CategoriaAdmin(admin.ModelAdmin):
@@ -13,7 +13,7 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 
 class ServicioAdmin(admin.ModelAdmin):
-    list_display = ['bussines', 'nombre', 'tiempo', 'precio']
+    list_display = ['id','bussines', 'nombre', 'tiempo', 'precio']
 
 
 class PrestadorAdmin(admin.ModelAdmin):
@@ -21,8 +21,7 @@ class PrestadorAdmin(admin.ModelAdmin):
 
 
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ['prestador',
-                    'servicio',  'fecha', 'hora', 'usuario']
+    list_display = ['id', 'prestador', 'servicio',  'fecha', 'hora', 'usuario']
 
 class CustomUserAdmin(admin.ModelAdmin):
 

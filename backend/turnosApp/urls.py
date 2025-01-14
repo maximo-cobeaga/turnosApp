@@ -17,6 +17,7 @@ urlpatterns = [
     re_path('profile/', views.profile),
     re_path('getBooks/', views.get_books),
     re_path('getBussines/', views.get_bussines),
+    re_path('getFree/', views.getFree),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

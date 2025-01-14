@@ -135,3 +135,4 @@ class Reserva(models.Model):
     fecha = models.DateField(null=False, blank=False)
     hora = models.TimeField(null=False, blank=False)
     nota = models.CharField(max_length=200, null=True, blank=True)
+

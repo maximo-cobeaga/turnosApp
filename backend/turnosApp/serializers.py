@@ -2,7 +2,7 @@ from django.template.context_processors import request
 from django.utils import timezone
 
 from rest_framework import serializers
-from .models import Reserva, Bussines, CustomUser
+from .models import Reserva, Bussines, CustomUser, Servicio, Prestador
 
 
 # Usurios
@@ -39,10 +39,20 @@ class BussinesSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Bussines
-        fields = ['id', 'nombre', 'codigo_postal', 'categoria', 'direccion', 'image']
+        fields = ['id', 'nombre', 'latitud','longitud','codigo_postal', 'categoria', 'direccion', 'image']
 
 
 class ReservasSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reserva
         fields = ['servicio', 'prestador', 'usuario', 'fecha', 'hora', 'nota']
+
+class ServicioSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = ['id', 'tiempo', 'nombre', 'precio', 'bussines']
+
+class PrestadoresSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Prestador
+        fields = '__all__'

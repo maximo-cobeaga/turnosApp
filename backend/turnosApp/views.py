@@ -1,11 +1,13 @@
+from datetime import timedelta, datetime
+
 from django.db import IntegrityError
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import CustomUserSerializers, ReservasSerializers, BussinesSerializers
-from .models import Bussines, Reserva
+from .serializers import CustomUserSerializers, ReservasSerializers, BussinesSerializers, ServicioSerializers, PrestadoresSerializers
+from .models import Bussines, Reserva, Servicio, Prestador
 # Create your views here.
 
 # Logica de negocios
@@ -64,3 +66,71 @@ def log_out(request):
 def profile(request):
     user = CustomUserSerializers(data=request.data)
     return Response
+
+
+
+
+def calcular_turnos_por_prestador(horario_inicio, horario_fin, duracion_servicio, reservas_ocupadas):
+    turnos_disponibles = []
+    actual = horario_inicio
+
+    while actual + duracion_servicio <= horario_fin:
+        hora_inicio = actual.time()
+        hora_fin = (actual + duracion_servicio).time()
+
+        # Verifica si el intervalo esta ocupado
+        ocupado = any(hora_inicio <= res < hora_fin for res in reservas_ocupadas)
+        if not ocupado:
+            turnos_disponibles.append(hora_inicio.strftime('%H:%M'))
+
+        actual += duracion_servicio
+
+    return turnos_disponibles
+
+
+
+
+
+@api_view(['GET'])
+def getFree(request):
+    fecha = request.query_params.get('fecha')
+    bussines_id = request.query_params.get('bussines')
+    servicio_id = request.query_params.get('servicio')
+
+
+    if not(fecha and bussines_id and servicio_id):
+        return Response({"Error": "Parametros faltantes"})
+
+    try:
+        dataServicio = Servicio.objects.get(pk=servicio_id)
+
+        dataReservas = Reserva.objects.filter(bussines=bussines_id, fecha=fecha)
+        reservas_serializer = ReservasSerializers(instance=dataReservas, many=True)
+
+        dataPrestadores = Prestador.objects.filter(bussines=bussines_id)
+        prestadores_serializer = PrestadoresSerializers(instance=dataPrestadores, many=True)
+
+        disponibilidad = {}
+        duracion_servicio = timedelta(minutes=dataServicio.tiempo)
+
+        for prestador in prestadores_serializer.data:
+            horario_inicio = datetime.strptime(prestador['apertura'], "%H:%M:%S")
+            horario_fin = datetime.strptime(prestador['cierre'], "%H:%M:%S")
+
+            reservas_ocupadas = [
+                datetime.strptime(reserva['hora'], "%H:%M:%S").time()
+                for reserva in reservas_serializer.data if reserva['prestador'] == prestador['id']
+            ]
+
+            turnos = calcular_turnos_por_prestador(horario_inicio, horario_fin, duracion_servicio, reservas_ocupadas)
+            disponibilidad[f"Prestador {prestador['id']} - {prestador['nombre']}"] = turnos
+
+        return Response({'disponibilidad': disponibilidad, 'servicio': ServicioSerializers(dataServicio).data}, status=status.HTTP_200_OK)
+
+
+    except Servicio.DoesNotExist:
+        return Response({"Error": "El servicio no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+

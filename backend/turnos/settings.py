@@ -102,8 +102,14 @@ AUTH_USER_MODEL = 'turnosApp.CustomUSer'
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     'http://192.168.100.8:8081',
-    'https://ce29-2803-9800-9991-7493-b1c9-4e38-d892-accc.ngrok-free.app',
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    'http://192.168.100.8:8081',
+]
+
+
 
 CORS_ALLOW_HEADERS = [
     'access-control-allow-origin',
