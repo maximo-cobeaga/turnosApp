@@ -84,7 +84,7 @@ export default function index() {
       <Image
         style={styles.cardImage}
         source={{
-          uri: "https://83a1-2803-9800-9991-7493-b9c6-7494-15b4-8e5e.ngrok-free.app/media/bussines_pic/default.jpg",
+          uri: "https://a693-2803-9800-9991-7493-84b3-214b-5e00-2307.ngrok-free.app/media/bussines_pic/default.jpg",
         }}
       />
       <View style={styles.cardBody}>

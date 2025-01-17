@@ -19,6 +19,7 @@ import { getBussinesFun } from "../../../api/bussinesAPI";
 import { obtainPairRefresh } from "../../../api/userAPI";
 import { CardHomeBussines } from "../../../components/CardHomeBussines";
 import { SearchIcon } from "../../../components/icons/SearchIcon";
+import { LocationSelect } from "../../../components/home/LocationSelect";
 
 const CATEGORIAS = [
   "Peluquerias",
@@ -76,6 +77,7 @@ export default function index() {
   if (bussines)
     return (
       <SafeAreaView style={styles.container}>
+        <LocationSelect />
         <View
           style={{
             width: "90%",
@@ -93,7 +95,7 @@ export default function index() {
             placeholder="Busca tu turno aqui"
             placeholderTextColor="#676363"
           />
-          <Link href="details/1" asChild>
+          <Link href="/(tabs)/(home)/details/2" asChild>
             <Pressable
               style={{
                 height: 20,

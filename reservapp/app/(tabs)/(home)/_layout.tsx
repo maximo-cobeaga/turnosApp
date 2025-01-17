@@ -11,20 +11,8 @@ export default function HomeLayout() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
+        headerShown: false,
       }}
-    >
-      <Stack.Screen
-        name="index"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="details/[id]"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+    />
   );
 }
