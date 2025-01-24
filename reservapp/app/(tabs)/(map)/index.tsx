@@ -12,6 +12,7 @@ import MapView, { AnimatedRegion, Marker } from "react-native-maps";
 import { getBussinesFun } from "../../../api/bussinesAPI";
 import { obtainPairRefresh } from "../../../api/userAPI";
 import * as SecureStore from "expo-secure-store";
+import { CardBussines } from "../../../components/maps/CardBussines";
 
 const { width } = Dimensions.get("window");
 
@@ -79,21 +80,6 @@ export default function index() {
     }
   };
 
-  const renderItem = ({ item, index }: { item: any; index: number }) => (
-    <View style={styles.card}>
-      <Image
-        style={styles.cardImage}
-        source={{
-          uri: "https://a693-2803-9800-9991-7493-84b3-214b-5e00-2307.ngrok-free.app/media/bussines_pic/default.jpg",
-        }}
-      />
-      <View style={styles.cardBody}>
-        <Text style={styles.cardTitle}>{item.nombre}</Text>
-        <Text style={styles.cardDescription}>{item.direccion}</Text>
-      </View>
-    </View>
-  );
-
   if (bussines) {
     return (
       <View style={styles.container}>
@@ -127,10 +113,13 @@ export default function index() {
             horizontal
             pagingEnabled
             keyExtractor={(item) => item.id.toString()}
-            renderItem={renderItem}
+            renderItem={({ item, index }) => (
+              <CardBussines item={item} index={index} />
+            )}
             showsHorizontalScrollIndicator={false}
             onMomentumScrollEnd={(event) => {
               // Detectar el índice del carrusel actual
+
               const index = Math.round(
                 event.nativeEvent.contentOffset.x / width
               );
@@ -155,42 +144,5 @@ const styles = StyleSheet.create({
     bottom: 20,
     width: "100%",
     height: 100,
-  },
-  card: {
-    flex: 1,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    justifyContent: "center",
-    width: width - 40,
-    marginHorizontal: 20,
-    height: 100,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  cardBody: {
-    padding: 5,
-    width: "60%",
-  },
-  cardImage: {
-    width: "40%",
-    height: 100,
-    resizeMode: "cover",
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  cardDescription: {
-    fontSize: 14,
-    color: "#555",
   },
 });

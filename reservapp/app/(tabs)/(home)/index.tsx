@@ -17,7 +17,7 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import { getBussinesFun } from "../../../api/bussinesAPI";
 import { obtainPairRefresh } from "../../../api/userAPI";
-import { CardHomeBussines } from "../../../components/CardHomeBussines";
+import { CardHomeBussines } from "../../../components/home/CardHomeBussines";
 import { SearchIcon } from "../../../components/icons/SearchIcon";
 import { LocationSelect } from "../../../components/home/LocationSelect";
 
@@ -85,7 +85,9 @@ export default function index() {
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "#B0D6E1",
+            backgroundColor: "#FFF",
+            borderWidth: 1,
+            borderColor: "#2e5077",
             margin: 10,
             borderRadius: 30,
           }}
@@ -128,7 +130,7 @@ export default function index() {
                   contentContainerStyle={{ gap: 10, paddingHorizontal: 12 }}
                   data={CATEGORIAS}
                   renderItem={({ item }) => (
-                    <Link href={"/(tabs)/(home)/details"} asChild>
+                    <Link href="/(tabs)/(home)/reserva" asChild>
                       <TouchableOpacity
                         style={{
                           display: "flex",
@@ -155,7 +157,7 @@ export default function index() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#DDF2FD",
+    backgroundColor: "#FFF",
     flex: 1,
     alignItems: "center",
   },

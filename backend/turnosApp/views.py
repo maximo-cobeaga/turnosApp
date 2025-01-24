@@ -1,5 +1,6 @@
 from datetime import timedelta, datetime
 
+from django.core.serializers import serialize
 from django.db import IntegrityError
 from rest_framework import status, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -29,16 +30,28 @@ def get_books(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_bussines(request):
-    bussines = Bussines.objects.all()
-    serializer = BussinesSerializers(bussines, many=True, context={'request': request})
-    return Response({'bussines': serializer.data}, status=status.HTTP_200_OK)
+    id = request.query_params.get('id')
+    if id:
+        bussines = Bussines.objects.get(pk=id)
+        servicios = Servicio.objects.filter(bussines=id)
+
+        serializerBussines = BussinesSerializers(instance=bussines, many=False, context={'request': request})
+        serilizerServicios = ServicioSerializers(instance=servicios, many=True, context={'request': request})
+
+        return Response({
+            'bussines': serializerBussines.data,
+            'servicios': serilizerServicios.data
+        }, status=status.HTTP_200_OK)
+    else:
+        bussines = Bussines.objects.all()
+        serializer = BussinesSerializers(bussines, many=True, context={'request': request})
+        return Response({'bussines': serializer.data}, status=status.HTTP_200_OK)
 
 # Gestion de usuarios
 
 @api_view(['POST'])
 def register(request):
     serializer = CustomUserSerializers(data=request.data)
-    print(request.data)
     if serializer.is_valid():
         try:
             serializer.save()
@@ -110,7 +123,7 @@ def getFree(request):
         dataPrestadores = Prestador.objects.filter(bussines=bussines_id)
         prestadores_serializer = PrestadoresSerializers(instance=dataPrestadores, many=True)
 
-        disponibilidad = {}
+        disponibilidad = []
         duracion_servicio = timedelta(minutes=dataServicio.tiempo)
 
         for prestador in prestadores_serializer.data:
@@ -123,7 +136,10 @@ def getFree(request):
             ]
 
             turnos = calcular_turnos_por_prestador(horario_inicio, horario_fin, duracion_servicio, reservas_ocupadas)
-            disponibilidad[f"Prestador {prestador['id']} - {prestador['nombre']}"] = turnos
+            disponibilidad.append({
+                "prestador": prestador["nombre"],
+                "data": turnos
+            })
 
         return Response({'disponibilidad': disponibilidad, 'servicio': ServicioSerializers(dataServicio).data}, status=status.HTTP_200_OK)
 
@@ -133,4 +149,49 @@ def getFree(request):
 
     except Exception as e:
         return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getBooks(request):
+    user = request.user
+    books = Reserva.objects.filter(usuario=user.id)
+    serializer = ReservasSerializers(instance=books, many=True, context={'request': request})
+    return Response({'email': user.email, 'books': serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def book(request):
+    serializer = ReservasSerializers(data=request.data)
+    if serializer.is_valid():
+        try:
+            serializer.save(usuario=request.user)
+            return Response({'Success':'Su reserva se realizo con exito'}, status=status.HTTP_200_OK)
+        except IntegrityError:
+            return Response({"Error": "La reserva ya existe"},
+                            status=status.HTTP_400_BAD_REQUEST)
+    return Response({'Error': serializer.errors}, status={status.HTTP_400_BAD_REQUEST})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

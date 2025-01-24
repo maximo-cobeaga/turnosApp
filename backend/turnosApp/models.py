@@ -98,15 +98,6 @@ class Bussines(models.Model):
         return self.nombre
 
 
-class Servicio(models.Model):
-    tiempo = models.IntegerField(null=False, blank=False)
-    nombre = models.CharField(max_length=50, null=False, blank=False)
-    precio = models.FloatField(null=False, blank=False)
-    bussines = models.ForeignKey(
-        Bussines, on_delete=models.CASCADE, related_name='servicios')
-
-    def __str__(self):
-        return self.nombre
 
 
 class Prestador(models.Model):
@@ -116,9 +107,20 @@ class Prestador(models.Model):
     bussines = models.ForeignKey(
         Bussines, on_delete=models.CASCADE, related_name='prestadores', null=True, blank=True)
 
+
+    def __str__(self):
+        return f'{self.nombre} ({self.bussines})'
+
+class Servicio(models.Model):
+    tiempo = models.IntegerField(null=False, blank=False)
+    nombre = models.CharField(max_length=50, null=False, blank=False)
+    precio = models.FloatField(null=False, blank=False)
+    bussines = models.ForeignKey(
+        Bussines, on_delete=models.CASCADE, related_name='servicios')
+    prestadores = models.ManyToManyField(Prestador, related_name='servicios')
+
     def __str__(self):
         return self.nombre
-
 
 
 class Reserva(models.Model):
@@ -136,3 +138,7 @@ class Reserva(models.Model):
     hora = models.TimeField(null=False, blank=False)
     nota = models.CharField(max_length=200, null=True, blank=True)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['bussines','prestador', 'fecha','hora'], name='unique_time')
+        ]

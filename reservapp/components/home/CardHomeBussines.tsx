@@ -1,6 +1,7 @@
 import { Link } from "expo-router";
 import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import { StarIcon } from "../icons/StarIcon";
 
 type ItemProps = any;
 
@@ -11,7 +12,7 @@ export function CardHomeBussines({ bussines }: ItemProps) {
         <Image
           style={styles.cardImage}
           source={{
-            uri: "https://a693-2803-9800-9991-7493-84b3-214b-5e00-2307.ngrok-free.app/media/bussines_pic/default.jpg",
+            uri: "https://7624-2803-9800-9991-7493-70dd-bb07-3fcb-b2c0.ngrok-free.app/media/bussines_pic/default.jpg",
           }}
         />
         <View style={styles.body}>
@@ -24,9 +25,16 @@ export function CardHomeBussines({ bussines }: ItemProps) {
             <Text style={styles.timeItem}>8:00 - 22:00</Text>
           </View>
           <View style={styles.more}>
-            <Text style={styles.calificacion}>4.4</Text>
-            <Text style={styles.categoria}>Peluqueria</Text>
-            <Text style={styles.sexo}>Hombre</Text>
+            <View style={[styles.moreComponent, styles.calificacion]}>
+              <View style={styles.star}>
+                <StarIcon />
+              </View>
+              <Text style={styles.calificacionText}>4.4</Text>
+            </View>
+            <Text style={[styles.moreComponent, styles.categoria]}>
+              Peluqueria
+            </Text>
+            <Text style={[styles.moreComponent, styles.sexo]}>Hombre</Text>
           </View>
         </View>
       </Pressable>
@@ -36,8 +44,10 @@ export function CardHomeBussines({ bussines }: ItemProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#B0D6E1",
+    backgroundColor: "#FFF",
     marginHorizontal: 20,
+    borderColor: "#2e5077",
+    borderWidth: 2,
     height: 150,
     flexDirection: "row",
     borderRadius: 10,
@@ -50,12 +60,9 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   title: {
+    color: "#2e5077",
     fontWeight: "bold",
     fontSize: 20,
-  },
-  categoria: {
-    fontSize: 15,
-    fontStyle: "italic",
   },
   direccion: {
     fontSize: 15,
@@ -76,4 +83,37 @@ const styles = StyleSheet.create({
   timeItem: {
     fontSize: 15,
   },
+  more: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 10,
+  },
+  moreComponent: {
+    backgroundColor: "#DDF2FD",
+    color: "#2e5077",
+    paddingHorizontal: 8,
+    fontWeight: "bold",
+    borderRadius: 10,
+  },
+  calificacion: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 4,
+  },
+  star: {
+    height: 13,
+    width: 13,
+  },
+  calificacionText: {
+    fontWeight: "bold",
+    color: "#2e5077",
+  },
+  categoria: {
+    fontSize: 15,
+  },
+  sexo: {},
 });

@@ -45,7 +45,18 @@ class BussinesSerializers(serializers.ModelSerializer):
 class ReservasSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reserva
-        fields = ['servicio', 'prestador', 'usuario', 'fecha', 'hora', 'nota']
+        fields = ['bussines','servicio', 'prestador', 'fecha', 'hora', 'nota']
+        extra_kwargs = {'usuario': {'read_only': True}}
+
+    def validate(self, data):
+        if Reserva.objects.filter(
+                bussines=data['bussines'],
+                prestador=data['prestador'],
+                fecha=data['fecha'],
+                hora=data['hora']
+        ).exists():
+            raise serializers.ValidationError("El turno ya existe, revisa tus reservas o elige otro turno")
+        return  data
 
 class ServicioSerializers(serializers.ModelSerializer):
     class Meta:
