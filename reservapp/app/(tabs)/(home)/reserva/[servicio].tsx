@@ -7,10 +7,13 @@ import {
   Pressable,
   SectionList,
   Modal,
+  Alert,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Calendar, LocaleConfig } from "react-native-calendars";
-import { getFreeBooks } from "../../../../api/serviciosAPI";
+import { getFreeBooks, makeBook } from "../../../../api/serviciosAPI";
+import * as SecureStore from "expo-secure-store";
+import { obtainPairRefresh } from "@/api/userAPI";
 
 export default function servicio() {
   LocaleConfig.locales["es"] = {
@@ -60,6 +63,7 @@ export default function servicio() {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedSection, setSelectedSection] = useState("");
+  const [prestador, setPrestador] = useState(0);
   const [turnos, setTurnos] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
 
@@ -69,9 +73,24 @@ export default function servicio() {
     setSelectedDate(day.dateString);
   };
 
+  const refreshToken = async () => {
+    const refresh = await SecureStore.getItemAsync("refresh");
+    const response = await obtainPairRefresh({ refresh: refresh });
+    await SecureStore.setItemAsync("access", response.data.access);
+    await SecureStore.setItemAsync("refresh", response.data.refresh);
+    return response.data.access;
+  };
+
   const handlSubmit = async () => {
     try {
-      const response = await getFreeBooks(selectedDate, bussines, servicio);
+      const access = await refreshToken();
+
+      const response = await getFreeBooks(
+        access,
+        selectedDate,
+        bussines,
+        servicio
+      );
       setTurnos(response.data.disponibilidad);
     } catch (error) {
       console.error(error);
@@ -82,10 +101,31 @@ export default function servicio() {
     router.back();
   };
 
-  const handleBook = (hora: string, prestador: string) => {
+  const handleBook = (hora: string, prestador: string, idPrestador: number) => {
     setShowModal(!showModal);
     setSelectedTime(hora);
     setSelectedSection(prestador);
+    setPrestador(idPrestador);
+  };
+
+  const sendBook = async () => {
+    setShowModal(false);
+    const access = await SecureStore.getItemAsync("access");
+    try {
+      const response = await makeBook(
+        access,
+        bussines,
+        prestador,
+        servicio,
+        selectedDate,
+        selectedTime
+      );
+      router.replace("/(tabs)/(home)/success");
+      Alert.alert("Success", "Su turno se realizo con exito");
+    } catch (errors) {
+      console.log(errors);
+      Alert.alert("Error", "Hubo un error al reservar, reintentar");
+    }
   };
 
   return (
@@ -115,7 +155,7 @@ export default function servicio() {
                   Cancelar
                 </Text>
               </Pressable>
-              <Pressable onPress={() => setShowModal(!showModal)}>
+              <Pressable onPress={() => sendBook()}>
                 <Text style={[styles.modalButton, styles.confirm]}>
                   Confirmar
                 </Text>
@@ -130,7 +170,9 @@ export default function servicio() {
         renderItem={({ item, section }) => (
           <View style={styles.itemContainer}>
             <Text style={styles.itemTitle}>{item}</Text>
-            <Pressable onPress={() => handleBook(item, section.prestador)}>
+            <Pressable
+              onPress={() => handleBook(item, section.prestador, section.id)}
+            >
               <Text style={styles.itemButton}>Reservar</Text>
             </Pressable>
           </View>

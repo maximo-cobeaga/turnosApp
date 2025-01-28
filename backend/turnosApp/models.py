@@ -142,3 +142,4 @@ class Reserva(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['bussines','prestador', 'fecha','hora'], name='unique_time')
         ]
+        ordering=['fecha', 'hora']

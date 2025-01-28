@@ -14,7 +14,7 @@ export function CardBussines({ item, index }: CardBussinesProps) {
       <Image
         style={styles.cardImage}
         source={{
-          uri: "https://7624-2803-9800-9991-7493-70dd-bb07-3fcb-b2c0.ngrok-free.app/media/bussines_pic/default.jpg",
+          uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
         }}
       />
       <View style={styles.cardBody}>

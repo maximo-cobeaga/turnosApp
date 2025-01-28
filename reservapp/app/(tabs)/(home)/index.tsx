@@ -32,7 +32,6 @@ const CATEGORIAS = [
 
 export default function index() {
   const [bussines, setBussines] = useState<any[]>([]);
-  const [access, setAccess] = useState("");
 
   async function save(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
@@ -58,11 +57,9 @@ export default function index() {
           });
           await SecureStore.deleteItemAsync("access");
           await SecureStore.deleteItemAsync("refresh");
-          setAccess(response.data.access);
           getBussinesAPI(response.data.access);
           save("access", response.data.access);
           save("refresh", response.data.refresh);
-          //getBussinesAPI(response.data.access);
         } else {
           console.log("Refresh token no encontrado");
         }
@@ -71,6 +68,7 @@ export default function index() {
         console.log(errors);
       }
     };
+
     refrescaToken();
   }, []);
 
@@ -110,47 +108,45 @@ export default function index() {
           </Link>
         </View>
 
-        <View style={styles.list}>
-          <FlatList
-            data={bussines}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{
-              gap: 15,
-              paddingBottom: 20,
-            }}
-            keyExtractor={(item) => item.id}
-            renderItem={(item) => <CardHomeBussines bussines={item.item} />}
-            ListHeaderComponentStyle={{ marginVertical: 10 }}
-            ListHeaderComponent={() => (
-              <View>
-                <FlatList
-                  horizontal={true}
-                  style={{ paddingVertical: 5 }}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={{ gap: 10, paddingHorizontal: 12 }}
-                  data={CATEGORIAS}
-                  renderItem={({ item }) => (
-                    <Link href="/(tabs)/(home)/reserva" asChild>
-                      <TouchableOpacity
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          backgroundColor: "#2e5077",
-                          padding: 5,
-                          borderRadius: 10,
-                        }}
-                      >
-                        <Text style={{ color: "#fff" }}>{item}</Text>
-                      </TouchableOpacity>
-                    </Link>
-                  )}
-                />
-                <Text style={styles.titulo}>Populares</Text>
-              </View>
-            )}
-          />
-        </View>
+        <FlatList
+          data={bussines}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            gap: 15,
+            paddingBottom: 20,
+          }}
+          keyExtractor={(item) => item.id}
+          renderItem={(item) => <CardHomeBussines bussines={item.item} />}
+          ListHeaderComponentStyle={{ marginVertical: 10 }}
+          ListHeaderComponent={() => (
+            <View>
+              <FlatList
+                horizontal={true}
+                style={{ paddingVertical: 5 }}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{ gap: 10, paddingHorizontal: 12 }}
+                data={CATEGORIAS}
+                renderItem={({ item }) => (
+                  <Link href="/(tabs)/(home)/reserva" asChild>
+                    <TouchableOpacity
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor: "#2e5077",
+                        padding: 5,
+                        borderRadius: 10,
+                      }}
+                    >
+                      <Text style={{ color: "#fff" }}>{item}</Text>
+                    </TouchableOpacity>
+                  </Link>
+                )}
+              />
+              <Text style={styles.titulo}>Populares</Text>
+            </View>
+          )}
+        />
       </SafeAreaView>
     );
 }
@@ -175,5 +171,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#2e5077",
   },
-  list: {},
+  list: {
+    paddingBottom: 20,
+  },
 });

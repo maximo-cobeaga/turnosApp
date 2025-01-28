@@ -7,7 +7,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import CustomUserSerializers, ReservasSerializers, BussinesSerializers, ServicioSerializers, PrestadoresSerializers
+from .serializers import CustomUserSerializers, BussinesSerializers, ServicioSerializers, ReservasSerializers, \
+    PrestadoresSerializers, ReservasSerializersByUser
 from .models import Bussines, Reserva, Servicio, Prestador
 # Create your views here.
 
@@ -103,8 +104,8 @@ def calcular_turnos_por_prestador(horario_inicio, horario_fin, duracion_servicio
 
 
 
-
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def getFree(request):
     fecha = request.query_params.get('fecha')
     bussines_id = request.query_params.get('bussines')
@@ -137,6 +138,7 @@ def getFree(request):
 
             turnos = calcular_turnos_por_prestador(horario_inicio, horario_fin, duracion_servicio, reservas_ocupadas)
             disponibilidad.append({
+                'id': prestador['id'],
                 "prestador": prestador["nombre"],
                 "data": turnos
             })
@@ -155,14 +157,14 @@ def getFree(request):
 @permission_classes([IsAuthenticated])
 def getBooks(request):
     user = request.user
-    books = Reserva.objects.filter(usuario=user.id)
-    serializer = ReservasSerializers(instance=books, many=True, context={'request': request})
+    books = Reserva.objects.filter(usuario=user.id).order_by('fecha')
+    serializer = ReservasSerializersByUser(instance=books, many=True, context={'request': request})
     return Response({'email': user.email, 'books': serializer.data}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def book(request):
+def makeBook(request):
     serializer = ReservasSerializers(data=request.data)
     if serializer.is_valid():
         try:
@@ -172,8 +174,6 @@ def book(request):
             return Response({"Error": "La reserva ya existe"},
                             status=status.HTTP_400_BAD_REQUEST)
     return Response({'Error': serializer.errors}, status={status.HTTP_400_BAD_REQUEST})
-
-
 
 
 

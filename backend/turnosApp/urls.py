@@ -11,7 +11,7 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('', include(router.urls)),
-    re_path('book/', views.book),
+    re_path('makeBook/', views.makeBook),
     re_path('register/', views.register),
     re_path('logout/', views.log_out),
     re_path('profile/', views.profile),

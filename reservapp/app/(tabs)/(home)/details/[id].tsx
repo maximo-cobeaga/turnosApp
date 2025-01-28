@@ -6,8 +6,7 @@ import {
   StyleSheet,
   Dimensions,
   FlatList,
-  ScrollView,
-  Alert,
+  ActivityIndicator,
   Pressable,
   TextInput,
 } from "react-native";
@@ -23,6 +22,7 @@ export default function BussinesDetails() {
   const { id } = useLocalSearchParams();
   const [bussines, setBussines] = useState<any>({});
   const [servicios, setServicios] = useState<any>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getBussines = async () => {
@@ -48,26 +48,35 @@ export default function BussinesDetails() {
           gap: 10,
         }}
         renderItem={({ item, index }) => (
-          <View style={styles.servicioItem} key={index}>
-            <Text style={styles.servicioTitle}>{item.nombre}</Text>
-            <Text style={styles.servicioTiempo}>{item.tiempo} Min</Text>
-            <Text style={styles.servicioPrecio}>${item.precio}</Text>
-            <Link
-              href={`/(tabs)/(home)/reserva/${item.id}/?nombre=${item.nombre}&precio=${item.precio}&tiempo=${item.tiempo}&bussines=${id}`}
-              asChild
-            >
+          <Link
+            href={`/(tabs)/(home)/reserva/${item.id}/?nombre=${item.nombre}&precio=${item.precio}&tiempo=${item.tiempo}&bussines=${id}`}
+            asChild
+          >
+            <Pressable style={styles.servicioItem} key={index}>
+              <Text style={styles.servicioTitle}>{item.nombre}</Text>
+              <Text style={styles.servicioTiempo}>{item.tiempo} Min</Text>
+              <Text style={styles.servicioPrecio}>${item.precio}</Text>
               <Pressable style={styles.servicioArrow}>
                 <ArrowRightIcon />
               </Pressable>
-            </Link>
-          </View>
+            </Pressable>
+          </Link>
         )}
         ListHeaderComponent={
           <View>
+            {loading && (
+              <ActivityIndicator
+                style={styles.loader}
+                size="large"
+                color="#2e5077"
+              />
+            )}
             <Image
+              onLoad={() => setLoading(false)}
+              onError={() => setLoading(false)}
               style={styles.imagen}
               source={{
-                uri: "https://7624-2803-9800-9991-7493-70dd-bb07-3fcb-b2c0.ngrok-free.app/media/bussines_pic/default.jpg",
+                uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
               }}
             />
             <View style={styles.body}>
@@ -97,6 +106,11 @@ export default function BussinesDetails() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFF",
+  },
+  loader: {
+    width: width,
+    height: 350,
+    position: "absolute",
   },
   imagen: {
     width: width,

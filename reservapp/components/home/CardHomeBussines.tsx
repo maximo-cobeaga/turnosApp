@@ -1,18 +1,35 @@
 import { Link } from "expo-router";
-import React from "react";
-import { View, Text, Image, StyleSheet, Pressable } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import { StarIcon } from "../icons/StarIcon";
 
 type ItemProps = any;
 
 export function CardHomeBussines({ bussines }: ItemProps) {
+  const [loading, setLoading] = useState(true);
   return (
     <Link href={`/(tabs)/(home)/details/${bussines.id}`} asChild>
       <Pressable style={styles.card}>
+        {loading && (
+          <ActivityIndicator
+            style={styles.loader}
+            size="large"
+            color="#2e5077"
+          />
+        )}
         <Image
-          style={styles.cardImage}
+          onLoad={() => setLoading(false)}
+          onError={() => setLoading(false)}
+          style={[styles.cardImage, loading && styles.borderLoader]}
           source={{
-            uri: "https://7624-2803-9800-9991-7493-70dd-bb07-3fcb-b2c0.ngrok-free.app/media/bussines_pic/default.jpg",
+            uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
           }}
         />
         <View style={styles.body}>
@@ -44,15 +61,31 @@ export function CardHomeBussines({ bussines }: ItemProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#f8f9fa",
     marginHorizontal: 20,
     borderColor: "#2e5077",
-    borderWidth: 2,
+    borderLeftWidth: 0,
     height: 150,
     flexDirection: "row",
     borderRadius: 10,
     justifyContent: "space-between",
     alignItems: "center",
+    shadowColor: "#2E5077",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+  },
+
+  loader: {
+    position: "absolute",
+    width: "45%",
+    height: 150,
+  },
+  borderLoader: {
+    borderLeftWidth: 2,
   },
   body: {
     gap: 5,

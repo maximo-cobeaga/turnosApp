@@ -42,6 +42,16 @@ class BussinesSerializers(serializers.ModelSerializer):
         fields = ['id', 'nombre', 'latitud','longitud','codigo_postal', 'categoria', 'direccion', 'image']
 
 
+class ServicioSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Servicio
+        fields = ['id', 'tiempo', 'nombre', 'precio', 'bussines']
+
+class PrestadoresSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Prestador
+        fields = '__all__'
+
 class ReservasSerializers(serializers.ModelSerializer):
     class Meta:
         model = Reserva
@@ -58,12 +68,12 @@ class ReservasSerializers(serializers.ModelSerializer):
             raise serializers.ValidationError("El turno ya existe, revisa tus reservas o elige otro turno")
         return  data
 
-class ServicioSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Servicio
-        fields = ['id', 'tiempo', 'nombre', 'precio', 'bussines']
+class ReservasSerializersByUser(serializers.ModelSerializer):
+    bussines = BussinesSerializers()
+    servicio = ServicioSerializers()
+    prestador = PrestadoresSerializers()
 
-class PrestadoresSerializers(serializers.ModelSerializer):
     class Meta:
-        model = Prestador
-        fields = '__all__'
+        model = Reserva
+        fields = ['bussines','servicio', 'prestador', 'fecha', 'hora', 'nota']
+

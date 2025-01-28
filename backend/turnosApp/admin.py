@@ -17,7 +17,7 @@ class ServicioAdmin(admin.ModelAdmin):
 
 
 class PrestadorAdmin(admin.ModelAdmin):
-    list_display = ['bussines', 'nombre', 'apertura', 'cierre']
+    list_display = ['id','bussines', 'nombre', 'apertura', 'cierre']
 
 
 class ReservaAdmin(admin.ModelAdmin):
