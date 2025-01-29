@@ -51,8 +51,11 @@ export default function index() {
     try {
       const response = await getBooks(access);
       if (response?.data?.books) {
-        setBooks(response.data.books);
-        console.log(response.data.books);
+        setBooks(
+          response.data.books.filter(
+            (b: Book) => Date.parse(b.fecha) > Date.now()
+          )
+        );
       }
     } catch (error) {
       console.log("Error en mis reservas getBooks");
@@ -102,6 +105,7 @@ export default function index() {
       ) : (
         <FlatList
           data={books}
+          style={{ marginVertical: 20 }}
           contentContainerStyle={{ gap: 10 }}
           refreshControl={
             <RefreshControl
@@ -109,12 +113,7 @@ export default function index() {
               onRefresh={() => refreshFunction()}
             />
           }
-          renderItem={({ item, index }) => {
-            if (Date.parse(item.fecha) > Date.now()) {
-              return <CardBook {...item} />;
-            }
-            return null;
-          }}
+          renderItem={({ item, index }) => <CardBook {...item} />}
         />
       )}
     </SafeAreaView>

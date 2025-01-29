@@ -1,27 +1,51 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 
 const { width } = Dimensions.get("window");
 
 type CardBussinesProps = {
-  item: { nombre: string; direccion: string };
+  item: { nombre: string; direccion: string; id: number };
   index: number;
 };
 
 export function CardBussines({ item, index }: CardBussinesProps) {
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => router.replace(`/(tabs)/(home)/details/${item.id}`)}
+    >
+      {loading && (
+        <ActivityIndicator
+          style={styles.cardImage}
+          size="large"
+          color="#2e5077"
+        />
+      )}
       <Image
+        onLoad={() => setLoading(false)}
+        onError={() => setLoading(false)}
         style={styles.cardImage}
         source={{
-          uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
+          uri: "https://13741c69c6eb.ngrok.app/media/bussines_pic/default.jpg",
         }}
       />
       <View style={styles.cardBody}>
         <Text style={styles.cardTitle}>{item.nombre}</Text>
         <Text style={styles.cardDescription}>{item.direccion}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

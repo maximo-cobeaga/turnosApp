@@ -13,6 +13,7 @@ import { getBussinesFun } from "../../../api/bussinesAPI";
 import { obtainPairRefresh } from "../../../api/userAPI";
 import * as SecureStore from "expo-secure-store";
 import { CardBussines } from "../../../components/maps/CardBussines";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const { width } = Dimensions.get("window");
 
@@ -102,7 +103,23 @@ export default function index() {
               }}
               title={b.nombre}
               description={b.direccion}
-            />
+            >
+              {b.categoria == 1 && (
+                <FontAwesome name="shower" size={30} color="#fff" />
+              )}
+              {b.categoria == 2 && (
+                <FontAwesome name="hotel" size={30} color="#fff" />
+              )}
+              {b.categoria == 3 && (
+                <FontAwesome name="scissors" size={30} color="#fff" />
+              )}
+              {b.categoria == 4 && (
+                <FontAwesome name="magic" size={30} color="#fff" />
+              )}
+              {b.categoria == 5 && (
+                <FontAwesome name="futbol-o" size={30} color="#fff" />
+              )}
+            </Marker.Animated>
           ))}
         </MapView>
         {/* // Carrusel de negocios */}

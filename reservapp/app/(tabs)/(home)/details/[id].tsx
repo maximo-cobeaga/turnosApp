@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   Pressable,
   TextInput,
+  TouchableOpacity,
 } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -52,14 +53,14 @@ export default function BussinesDetails() {
             href={`/(tabs)/(home)/reserva/${item.id}/?nombre=${item.nombre}&precio=${item.precio}&tiempo=${item.tiempo}&bussines=${id}`}
             asChild
           >
-            <Pressable style={styles.servicioItem} key={index}>
+            <TouchableOpacity style={styles.servicioItem} key={index}>
               <Text style={styles.servicioTitle}>{item.nombre}</Text>
               <Text style={styles.servicioTiempo}>{item.tiempo} Min</Text>
               <Text style={styles.servicioPrecio}>${item.precio}</Text>
-              <Pressable style={styles.servicioArrow}>
+              <View style={styles.servicioArrow}>
                 <ArrowRightIcon />
-              </Pressable>
-            </Pressable>
+              </View>
+            </TouchableOpacity>
           </Link>
         )}
         ListHeaderComponent={
@@ -76,7 +77,7 @@ export default function BussinesDetails() {
               onError={() => setLoading(false)}
               style={styles.imagen}
               source={{
-                uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
+                uri: "https://13741c69c6eb.ngrok.app/media/bussines_pic/default.jpg",
               }}
             />
             <View style={styles.body}>

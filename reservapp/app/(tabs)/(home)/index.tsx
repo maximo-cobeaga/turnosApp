@@ -95,7 +95,7 @@ export default function index() {
             placeholder="Busca tu turno aqui"
             placeholderTextColor="#676363"
           />
-          <Link href="/(tabs)/(home)/details/2" asChild>
+          <Link href="/pruebaForm" asChild>
             <Pressable
               style={{
                 height: 20,

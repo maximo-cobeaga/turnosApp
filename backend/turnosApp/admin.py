@@ -9,7 +9,7 @@ class BussinesAdminModel(admin.ModelAdmin):
 
 
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ['titulo']
+    list_display = ['id','titulo']
 
 
 class ServicioAdmin(admin.ModelAdmin):

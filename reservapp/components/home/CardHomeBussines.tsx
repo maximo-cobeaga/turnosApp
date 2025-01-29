@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Pressable,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { StarIcon } from "../icons/StarIcon";
 
@@ -16,7 +17,7 @@ export function CardHomeBussines({ bussines }: ItemProps) {
   const [loading, setLoading] = useState(true);
   return (
     <Link href={`/(tabs)/(home)/details/${bussines.id}`} asChild>
-      <Pressable style={styles.card}>
+      <TouchableOpacity style={styles.card}>
         {loading && (
           <ActivityIndicator
             style={styles.loader}
@@ -29,7 +30,7 @@ export function CardHomeBussines({ bussines }: ItemProps) {
           onError={() => setLoading(false)}
           style={[styles.cardImage, loading && styles.borderLoader]}
           source={{
-            uri: "https://96e3597c96ce.ngrok.app/media/bussines_pic/default.jpg",
+            uri: "https://13741c69c6eb.ngrok.app/media/bussines_pic/default.jpg",
           }}
         />
         <View style={styles.body}>
@@ -54,7 +55,7 @@ export function CardHomeBussines({ bussines }: ItemProps) {
             <Text style={[styles.moreComponent, styles.sexo]}>Hombre</Text>
           </View>
         </View>
-      </Pressable>
+      </TouchableOpacity>
     </Link>
   );
 }

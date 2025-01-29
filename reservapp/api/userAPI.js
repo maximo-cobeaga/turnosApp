@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "https://96e3597c96ce.ngrok.app/";
+const baseUrl = "https://13741c69c6eb.ngrok.app/";
 
 const logInUrl = axios.create({
   baseURL: `${baseUrl}api/v1/token`,
