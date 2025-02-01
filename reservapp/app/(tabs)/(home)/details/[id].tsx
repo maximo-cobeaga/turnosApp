@@ -77,7 +77,7 @@ export default function BussinesDetails() {
               onError={() => setLoading(false)}
               style={styles.imagen}
               source={{
-                uri: "https://13741c69c6eb.ngrok.app/media/bussines_pic/default.jpg",
+                uri: "https://af6856d7e8b6.ngrok.app/media/bussines_pic/default.jpg",
               }}
             />
             <View style={styles.body}>

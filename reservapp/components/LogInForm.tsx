@@ -7,6 +7,7 @@ import {
   Pressable,
   Alert,
   Dimensions,
+  Button,
 } from "react-native";
 import React, { useState } from "react";
 import * as SecureStore from "expo-secure-store";
@@ -14,24 +15,40 @@ import axios from "axios";
 import { Link, useRouter } from "expo-router";
 import { logInFun } from "../api/userAPI";
 import { HelpSection } from "./HelpSection";
+import { FormInputController } from "./login/FormInputController";
+import { useForm } from "react-hook-form";
+
+import { fromLoginSchema } from "@/constants/schema/userSchema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Schema } from "yup";
+import { useAuth } from "@/context/AuthContext";
 
 export function LogInForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isEmailFocus, setIsEmailFocus] = useState(false);
-  const [isPasswordFocus, setIsPasswordFocus] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setUser } = useAuth();
   const router = useRouter();
 
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(fromLoginSchema),
+  });
   async function save(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
   }
 
-  const handlePress = async () => {
+  const submit = (data) => {
+    Alert.alert(JSON.stringify(data.correo));
+  };
+
+  const handlePress = async (data) => {
     setIsSubmitting(true);
+    await SecureStore.setItemAsync("email", data.correo);
     const params = {
-      email: email,
-      password: password,
+      email: data.correo,
+      password: data.contraseña,
     };
 
     try {
@@ -60,6 +77,43 @@ export function LogInForm() {
       <View style={styles.section}>
         <View style={styles.form}>
           <View style={styles.fields}>
+            <Text style={styles.label}>Correo electronico</Text>
+            <FormInputController
+              control={control}
+              errors={errors}
+              name="correo"
+              props={{
+                autoCapitalize: "none",
+              }}
+            />
+          </View>
+
+          <View style={styles.fields}>
+            <Text style={styles.label}>Contraseña</Text>
+            <FormInputController
+              control={control}
+              errors={errors}
+              name="contraseña"
+              props={{
+                secureTextEntry: true,
+              }}
+            />
+            <Link href="/" asChild>
+              <Text
+                style={{
+                  color: "#2E5077",
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 15,
+                  margin: 5,
+                }}
+              >
+                ¿Olvidaste tu contraseña?
+              </Text>
+            </Link>
+          </View>
+
+          {/* <View style={styles.fields}>
             <Text style={styles.label}>Correo electronico</Text>
             <TextInput
               placeholder="Ingrese su correo electronico"
@@ -96,10 +150,13 @@ export function LogInForm() {
                 ¿Olvidaste tu contraseña?
               </Text>
             </Link>
-          </View>
+          </View> */}
 
           <View style={styles.actionsContainer}>
-            <Pressable onPress={handlePress} disabled={isSubmitting}>
+            <Pressable
+              onPress={handleSubmit(handlePress)}
+              disabled={isSubmitting}
+            >
               <Text style={[styles.submit, styles.bgBlue]}>Iniciar sesion</Text>
             </Pressable>
             <Link href={"/register"} asChild>

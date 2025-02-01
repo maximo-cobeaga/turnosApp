@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'users',
     'turnosApp',
 ]
 
@@ -97,7 +98,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
-AUTH_USER_MODEL = 'turnosApp.CustomUSer'
+AUTH_USER_MODEL = 'users.CustomUSer'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -163,6 +164,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 USE_TZ = True
 
 

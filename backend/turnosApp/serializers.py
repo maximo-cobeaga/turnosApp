@@ -2,28 +2,7 @@ from django.template.context_processors import request
 from django.utils import timezone
 
 from rest_framework import serializers
-from .models import Reserva, Bussines, CustomUser, Servicio, Prestador
-
-
-# Usurios
-class CustomUserSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ['email', 'nombre', 'apellido', 'telefono', 'nacimiento', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def validate_nacimiento(self, value):
-        if value > timezone.now().date():
-            raise serializers.ValidationError('La fecha de nacimiento no puede ser futura')
-        return value
-
-    def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = CustomUser(**validated_data)
-        user.set_password(password)
-        user.save()
-        return user
-
+from .models import Reserva, Bussines, Servicio, Prestador
 
 
 # Logica de negocios

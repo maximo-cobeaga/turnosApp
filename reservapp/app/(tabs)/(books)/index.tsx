@@ -6,11 +6,14 @@ import {
   Text,
   RefreshControl,
   StyleSheet,
+  View,
+  Pressable,
 } from "react-native";
-import { getBooks } from "../../../api/serviciosAPI";
+import { obtainBooks } from "../../../api/serviciosAPI";
 import { obtainPairRefresh } from "../../../api/userAPI";
 import * as SecureStore from "expo-secure-store";
 import { CardBook } from "../../../components/books/CardBook";
+import { useAuth } from "@/context/AuthContext";
 
 export interface Book {
   bussines: {
@@ -19,7 +22,7 @@ export interface Book {
     latitud: number;
     longitud: number;
     codigo_postal: number;
-    categoria: 1;
+    categoria: number;
     direccion: string;
     image: string;
   };
@@ -43,54 +46,17 @@ export interface Book {
 }
 
 export default function index() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState<Boolean>(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  const obtainBooks = async (access: string) => {
-    try {
-      const response = await getBooks(access);
-      if (response?.data?.books) {
-        setBooks(
-          response.data.books.filter(
-            (b: Book) => Date.parse(b.fecha) > Date.now()
-          )
-        );
-      }
-    } catch (error) {
-      console.log("Error en mis reservas getBooks");
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const refreshToken = async () => {
-    const refresh = await SecureStore.getItemAsync("refresh");
-    try {
-      const response = await obtainPairRefresh({ refresh: refresh });
-      obtainBooks(response.data.access);
-      await SecureStore.setItemAsync("access", response.data.access);
-      await SecureStore.setItemAsync("refresh", response.data.refresh);
-    } catch (error) {
-      console.log("ERROR REFRESH MIS RESERVAS");
-      console.log(error);
-    } finally {
-    }
-  };
+  const { books, refreshBooks } = useAuth();
+  const [booksFilter, setBooksFilter] = useState<Book[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
   const refreshFunction = () => {
-    try {
-      setRefreshing(true);
-      refreshToken();
-    } finally {
-      setRefreshing(false);
-    }
+    refreshBooks();
+    console.log(books[1].fecha);
+    console.log(books[1].hora);
+    console.log();
   };
-
-  useEffect(() => {
-    refreshToken();
-  }, []);
 
   return (
     <SafeAreaView
@@ -104,7 +70,46 @@ export default function index() {
         <ActivityIndicator size="large" color="#2e5077" />
       ) : (
         <FlatList
-          data={books}
+          data={books.filter(
+            (b) => Date.parse(`${b.fecha}T${b.hora}`) > Date.now()
+          )}
+          ListEmptyComponent={
+            <View style={{ margin: 20, gap: 20 }}>
+              <Text
+                style={{
+                  color: "#2e5077",
+                  fontWeight: "bold",
+                  textAlign: "center",
+                }}
+              >
+                No hay reservas disponibles
+              </Text>
+              <Pressable
+                onPress={() => refreshFunction()}
+                style={[
+                  styles.button,
+                  {
+                    backgroundColor: "white",
+                    borderWidth: 1,
+                    borderColor: "#2e5077",
+                  },
+                ]}
+              >
+                <Text style={[styles.btnText, { color: "#2e5077" }]}>
+                  Actualizar
+                </Text>
+              </Pressable>
+              <Pressable style={styles.button}>
+                <Text style={styles.btnText}>Ir al mapa</Text>
+              </Pressable>
+              <Pressable style={styles.button}>
+                <Text style={styles.btnText}>Ir a explorar</Text>
+              </Pressable>
+              <Pressable style={styles.button}>
+                <Text style={styles.btnText}>Ir a historial de reservas</Text>
+              </Pressable>
+            </View>
+          }
           style={{ marginVertical: 20 }}
           contentContainerStyle={{ gap: 10 }}
           refreshControl={
@@ -125,5 +130,16 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "#2e5077",
+  },
+  button: {
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#2e5077",
+  },
+  btnText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 15,
   },
 });

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const freeURL = axios.create({
-  baseURL: "https://13741c69c6eb.ngrok.app/api/v1/getFree/",
+  baseURL: "https://af6856d7e8b6.ngrok.app/api/v1/getFree/",
 });
 
 export const getFreeBooks = (access, date, bussines, servicio) => {
@@ -16,7 +16,7 @@ export const getFreeBooks = (access, date, bussines, servicio) => {
 };
 
 const makeBookURL = axios.create({
-  baseURL: "https://13741c69c6eb.ngrok.app/api/v1/makeBook",
+  baseURL: "https://af6856d7e8b6.ngrok.app/api/v1/makeBook",
 });
 
 export const makeBook = (
@@ -42,10 +42,10 @@ export const makeBook = (
 };
 
 const getBooksURL = axios.create({
-  baseURL: "https://13741c69c6eb.ngrok.app/api/v1/getBooks/",
+  baseURL: "https://af6856d7e8b6.ngrok.app/api/v1/getBooks/",
 });
 
-export const getBooks = (access) =>
+export const obtainBooks = (access) =>
   getBooksURL.get("/", {
     headers: {
       Authorization: `Bearer ${access}`,

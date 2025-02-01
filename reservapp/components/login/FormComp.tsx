@@ -6,59 +6,51 @@ import {
   Text,
   TextInput,
   Button,
+  Alert,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
+import { FormInputController } from "./FormInputController";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { fromLoginSchema } from "@/constants/schema/userSchema";
 
 export function FormComp() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(fromLoginSchema),
+  });
 
   const submit = (data) => {
-    console.log(data);
+    Alert.alert(JSON.stringify(data));
   };
   return (
     <View style={styles.container}>
       <Text>React hook form example an react native</Text>
-      <Controller
-        name="username"
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Enter your name"
-            style={styles.input}
-            placeholderTextColor={"gray"}
-            value={value}
-            onBlur={onBlur}
-            onChangeText={onChange}
-          />
-        )}
-        rules={{ required: true, minLength: 5 }}
-      />
-      {errors.username && (
-        <Text style={styles.error}>The username is required</Text>
-      )}
-      <Controller
-        name="email"
-        control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            placeholder="Enter your email"
-            style={styles.input}
-            placeholderTextColor={"gray"}
-            value={value}
-            onBlur={onBlur}
-            onChangeText={onChange}
-          />
-        )}
-        rules={{
-          required: true,
-          pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        }}
-      />
-      {errors.email && <Text>El campo email esta mal</Text>}
+
+      <View>
+        <Text>Correo</Text>
+        <FormInputController
+          control={control}
+          errors={errors}
+          name={"correo"}
+        />
+      </View>
+
+      <View>
+        <Text>Contraseña</Text>
+        <FormInputController
+          control={control}
+          errors={errors}
+          name={"contraseña"}
+          props={{
+            secureTextEntry: true,
+          }}
+        />
+      </View>
+
       <Button title="submit" onPress={handleSubmit(submit)} />
     </View>
   );
@@ -69,16 +61,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    width: "90%",
-    marginTop: 18,
-    borderColor: "gray",
-  },
-  error: {
-    color: "red",
   },
 });

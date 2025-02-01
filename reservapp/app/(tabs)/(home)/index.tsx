@@ -10,7 +10,6 @@ import {
   Dimensions,
   Pressable,
   TouchableOpacity,
-  TurboModuleRegistry,
 } from "react-native";
 import { Link } from "expo-router";
 import * as SecureStore from "expo-secure-store";
@@ -20,6 +19,7 @@ import { obtainPairRefresh } from "../../../api/userAPI";
 import { CardHomeBussines } from "../../../components/home/CardHomeBussines";
 import { SearchIcon } from "../../../components/icons/SearchIcon";
 import { LocationSelect } from "../../../components/home/LocationSelect";
+import { useAuth } from "@/context/AuthContext";
 
 const CATEGORIAS = [
   "Peluquerias",
@@ -31,46 +31,48 @@ const CATEGORIAS = [
 ];
 
 export default function index() {
-  const [bussines, setBussines] = useState<any[]>([]);
+  // const [bussines, setBussines] = useState<any[]>([]);
 
-  async function save(key: string, value: string) {
-    await SecureStore.setItemAsync(key, value);
-  }
+  // async function save(key: string, value: string) {
+  //   await SecureStore.setItemAsync(key, value);
+  // }
 
-  useEffect(() => {
-    const getBussinesAPI = async (access: string) => {
-      try {
-        const response = await getBussinesFun(access);
-        setBussines(response.data.bussines);
-      } catch (errors) {
-        console.log("Hubo un error con getbussines");
-        console.log(errors);
-      }
-    };
+  // useEffect(() => {
+  //   const getBussinesAPI = async (access: string) => {
+  //     try {
+  //       const response = await getBussinesFun(access);
+  //       setBussines(response.data.bussines);
+  //     } catch (errors) {
+  //       console.log("Hubo un error con getbussines");
+  //       console.log(errors);
+  //     }
+  //   };
 
-    const refrescaToken = async () => {
-      try {
-        const refreshToken = await SecureStore.getItemAsync("refresh");
-        if (refreshToken) {
-          const response = await obtainPairRefresh({
-            refresh: refreshToken,
-          });
-          await SecureStore.deleteItemAsync("access");
-          await SecureStore.deleteItemAsync("refresh");
-          getBussinesAPI(response.data.access);
-          save("access", response.data.access);
-          save("refresh", response.data.refresh);
-        } else {
-          console.log("Refresh token no encontrado");
-        }
-      } catch (errors) {
-        console.log("Error Refresh");
-        console.log(errors);
-      }
-    };
+  //   const refrescaToken = async () => {
+  //     try {
+  //       const refreshToken = await SecureStore.getItemAsync("refresh");
+  //       if (refreshToken) {
+  //         const response = await obtainPairRefresh({
+  //           refresh: refreshToken,
+  //         });
+  //         await SecureStore.deleteItemAsync("access");
+  //         await SecureStore.deleteItemAsync("refresh");
+  //         getBussinesAPI(response.data.access);
+  //         save("access", response.data.access);
+  //         save("refresh", response.data.refresh);
+  //       } else {
+  //         console.log("Refresh token no encontrado");
+  //       }
+  //     } catch (errors) {
+  //       console.log("Error Refresh");
+  //       console.log(errors);
+  //     }
+  //   };
 
-    refrescaToken();
-  }, []);
+  //   refrescaToken();
+  // }, []);
+
+  const { bussines = [] } = useAuth();
 
   if (bussines)
     return (
@@ -110,12 +112,24 @@ export default function index() {
 
         <FlatList
           data={bussines}
+          ListEmptyComponent={
+            <Text
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "#2e5077",
+                fontSize: 20,
+              }}
+            >
+              No hay negocios disponibles
+            </Text>
+          }
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
             gap: 15,
             paddingBottom: 20,
           }}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={(item) => <CardHomeBussines bussines={item.item} />}
           ListHeaderComponentStyle={{ marginVertical: 10 }}
           ListHeaderComponent={() => (

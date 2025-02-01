@@ -8,6 +8,7 @@ import {
   Button,
 } from "react-native";
 import { OkIcon } from "../../../components/icons/OkIcon";
+import { Link } from "expo-router";
 
 export default function success() {
   return (
@@ -66,15 +67,25 @@ export default function success() {
           gap: 20,
         }}
       >
-        <Pressable>
-          <Text style={[styles.button, styles.bgBlue]}>Ir a pagar</Text>
-        </Pressable>
-        <Pressable>
-          <Text style={[styles.button, styles.outline]}>Ver mis reservas</Text>
-        </Pressable>
-        <Pressable>
-          <Text style={[styles.button, styles.outline]}>Volver al inicio</Text>
-        </Pressable>
+        <Link href={"/(tabs)/(home)"} asChild>
+          <Pressable>
+            <Text style={[styles.button, styles.bgBlue]}>Ir a pagar</Text>
+          </Pressable>
+        </Link>
+        <Link href={"/(tabs)/(books)"} asChild>
+          <Pressable>
+            <Text style={[styles.button, styles.outline]}>
+              Ver mis reservas
+            </Text>
+          </Pressable>
+        </Link>
+        <Link href={"/(tabs)/(home)"} asChild>
+          <Pressable>
+            <Text style={[styles.button, styles.outline]}>
+              Volver al inicio
+            </Text>
+          </Pressable>
+        </Link>
       </View>
     </SafeAreaView>
   );
