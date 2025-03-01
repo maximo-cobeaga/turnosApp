@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Categoria, Servicio, Prestador, Reserva, Bussines
+from .models import Categoria, Servicio, Prestador, Reserva, Bussines,Favoritos
 
 # Register your models here.
 
@@ -23,6 +23,8 @@ class PrestadorAdmin(admin.ModelAdmin):
 class ReservaAdmin(admin.ModelAdmin):
     list_display = ['id', 'prestador', 'servicio',  'fecha', 'hora', 'usuario']
 
+class FavoritosAdmin(admin.ModelAdmin):
+    list_display = ['id', 'usuario']
 
 
 admin.site.register(Bussines, BussinesAdminModel)
@@ -30,3 +32,4 @@ admin.site.register(Categoria, CategoriaAdmin)
 admin.site.register(Servicio, ServicioAdmin)
 admin.site.register(Prestador, PrestadorAdmin)
 admin.site.register(Reserva, ReservaAdmin)
+admin.site.register(Favoritos, FavoritosAdmin)

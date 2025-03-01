@@ -1,8 +1,12 @@
-from rest_framework.decorators import api_view
+from django.core.serializers import serialize
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework import status
 from django.db import IntegrityError
+
+from .models import CustomUser
 from .serializers import CustomUserSerializers
 
 # Create your views here.
@@ -33,7 +37,9 @@ def log_out(request):
         return Response({'Error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def profile(request):
-    user = CustomUserSerializers(data=request.data)
-    return Response({'user', user.data})
+    user = CustomUser.objects.get(email=request.user.email)
+    serializer = CustomUserSerializers(instance=user)
+    return Response({'user': serializer.data})

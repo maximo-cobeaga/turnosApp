@@ -2,7 +2,7 @@ from django.template.context_processors import request
 from django.utils import timezone
 
 from rest_framework import serializers
-from .models import Reserva, Bussines, Servicio, Prestador
+from .models import Reserva, Bussines, Servicio, Prestador, Favoritos
 
 
 # Logica de negocios
@@ -56,3 +56,24 @@ class ReservasSerializersByUser(serializers.ModelSerializer):
         model = Reserva
         fields = ['bussines','servicio', 'prestador', 'fecha', 'hora', 'nota']
 
+
+class FavoritosSerializers(serializers.ModelSerializer):
+    bussines = BussinesSerializers(many=True)
+
+    class Meta:
+        model = Favoritos
+        fields = ['usuario', 'bussines']
+
+ #class FavoritosSerializer(serializers.ModelSerializer):
+ #    bussines = BussinesSerializers(many=True, read_only=True)
+ #    bussines_ids = serializers.ListField(write_only=True, child=serializers.IntegerField())
+ #
+ #    class Meta:
+ #        model = Favoritos
+ #        fields = ['usuario', 'bussines', 'bussines_ids']
+ #
+ #    def update(self, instance, validated_data):
+ #        bussines_ids = validated_data.get("bussines_ids", [])
+ #        instance.bussines.set(Bussines.objects.filter(id__in=bussines_ids))
+ #        instance.save()
+ #        return instance

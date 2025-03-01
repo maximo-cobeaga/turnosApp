@@ -123,6 +123,7 @@ CORS_ALLOW_METHODS = [
     'GET',
     'POST',
     'OPTIONS',
+    'PATCH',
 ]
 
 # Database
@@ -166,6 +167,8 @@ USE_I18N = True
 
 TIME_ZONE = 'America/Argentina/Buenos_Aires'
 USE_TZ = True
+
+
 
 
 # Static files (CSS, JavaScript, Images)

@@ -20,12 +20,9 @@ import { useForm } from "react-hook-form";
 
 import { fromLoginSchema } from "@/constants/schema/userSchema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Schema } from "yup";
-import { useAuth } from "@/context/AuthContext";
 
 export function LogInForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { setUser } = useAuth();
   const router = useRouter();
 
   const {
@@ -38,10 +35,6 @@ export function LogInForm() {
   async function save(key: string, value: string) {
     await SecureStore.setItemAsync(key, value);
   }
-
-  const submit = (data) => {
-    Alert.alert(JSON.stringify(data.correo));
-  };
 
   const handlePress = async (data) => {
     setIsSubmitting(true);

@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 import requests
+from django.db.models import OneToOneField
+
 
 # Create your models here.
 
@@ -12,6 +14,7 @@ class Categoria(models.Model):
 
 
 class Bussines(models.Model):
+    DoesNotExist = None
     nombre = models.CharField(max_length=100, null=False, blank=False)
     image = models.ImageField(upload_to='bussines_pic', default='bussimes_pic/default.jpg')
     codigo_postal = models.IntegerField(null=False, blank=False)
@@ -82,3 +85,7 @@ class Reserva(models.Model):
             models.UniqueConstraint(fields=['bussines','prestador', 'fecha','hora'], name='unique_time')
         ]
         ordering=['fecha', 'hora']
+
+class Favoritos(models.Model):
+    usuario = OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favoritos')
+    bussines = models.ManyToManyField(Bussines, related_name='usuario_favoritos', blank=False)

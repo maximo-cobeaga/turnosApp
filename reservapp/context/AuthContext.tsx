@@ -6,7 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import * as SecureStore from "expo-secure-store";
-import { obtainPairRefresh } from "@/api/userAPI";
+import { obtainPairRefresh, getProfile } from "@/api/userAPI";
 import { getBussinesFun } from "@/api/bussinesAPI";
 import { obtainBooks } from "@/api/serviciosAPI";
 
@@ -43,8 +43,11 @@ interface Bussines {
 }
 
 interface User {
-  id: number;
   email: string;
+  nombre: string;
+  apellido: string;
+  telefono: string;
+  nacimiento: string;
 }
 
 interface AuthContextProps {
@@ -90,6 +93,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setBussines(responseBussines.data.bussines);
       const responseBooks = await obtainBooks(access);
       setBooks(responseBooks.data.books);
+      const responseUser = await getProfile(access);
+      setUser(responseUser.data.user);
     };
 
     getData();

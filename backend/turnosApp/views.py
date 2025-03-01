@@ -1,12 +1,19 @@
 from datetime import timedelta, datetime
+from idlelib.iomenu import errors
+from winreg import REG_EXPAND_SZ
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import IntegrityError
-from rest_framework import status
+from rest_framework import status, viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from .serializers import  BussinesSerializers, ServicioSerializers, ReservasSerializers, \
-    PrestadoresSerializers, ReservasSerializersByUser
-from .models import Bussines, Reserva, Servicio, Prestador
+    PrestadoresSerializers, ReservasSerializersByUser, FavoritosSerializers
+from .models import Bussines, Reserva, Servicio, Prestador, Favoritos
+
+
 # Create your views here.
 
 # Logica de negocios
@@ -138,22 +145,72 @@ def makeBook(request):
                             status=status.HTTP_400_BAD_REQUEST)
     return Response({'Error': serializer.errors}, status={status.HTTP_400_BAD_REQUEST})
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def obtener_favoritos(request):
+    try:
+        favoritos= Favoritos.objects.get(usuario=request.user)
+        serializer = FavoritosSerializers(instance=favoritos, context={'request': request})
+        return Response({"Favortios": serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def agregar_favoritos(request):
+    try:
+        usuario= request.user
+        print(request.data)
+        bussines_id = request.data.get("bussines_id")
+
+        if not bussines_id:
+            return Response({"Error": "Se requierre el ID del negocio"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            bussines = Bussines.objects.get(id=bussines_id)
+        except bussines.DoesNotExist:
+            return Response({"Error", "El negocio no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+        favoritos, created = Favoritos.objects.get_or_create(usuario=usuario)
+
+        if favoritos.bussines.filter(id=bussines_id).exists():
+            return Response({"Mensaje": "El negocio ya esta en favoritos"}, status=status.HTTP_200_OK)
+
+        favoritos.bussines.add(bussines)
+        favoritos.save()
+
+        return Response({"Mensaje": "El negocion se agrego a favoritos"}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def quita_favoritos(request):
+    try:
+        usuario = request.user
+        bussines_id = request.data.get("bussines_id")
 
+        if not bussines_id:
+            return Response({"Error", "El bussines ID es necesario"}, status=status.HTTP_400_BAD_REQUEST)
 
+        try:
+            bussines = Bussines.objects.get(id=bussines_id)
+        except ObjectDoesNotExist:
+            return Response({"Error": "El bussines no existe"}, status=status.HTTP_404_NOT_FOUND)
 
+        favoritos, created = Favoritos.objects.get_or_create(usuario=usuario)
 
+        if not favoritos.bussines.filter(id=bussines_id).exists():
+            return Response({"Error": "El bussines no se encuentra en favoritos"}, status=status.HTTP_400_BAD_REQUEST)
 
+        favoritos.bussines.remove(bussines)
+        favoritos.save()
 
-
-
-
-
-
-
-
-
+        return Response({"Mensaje": "El negocio se removio de la lista de favoritos"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

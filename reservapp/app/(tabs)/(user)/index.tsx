@@ -12,15 +12,12 @@ import { Link, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 // COMPONENTS
 import { LinkButton } from "../../../components/user/LinkButton";
-import { FeSpotLight } from "react-native-svg";
 import { useAuth } from "@/context/AuthContext";
 
 export default function index() {
   const router = useRouter();
-  const { user, bussines } = useAuth();
+  const { user } = useAuth();
   useEffect(() => {}, []);
-
-  const buttonS = () => console.log(bussines);
 
   const logOut = async () => {
     await SecureStore.deleteItemAsync("access");
@@ -40,8 +37,14 @@ export default function index() {
       >
         Gestiona tu cuenta
       </Text>
-      <Text>Hola: {String(user)}</Text>
-      <Button title="BOTOTN" onPress={() => buttonS()} />
+      <Text
+        style={{
+          fontSize: 20,
+          color: "#2e5077",
+        }}
+      >
+        Hola: {`${user?.nombre}`}
+      </Text>
       <View style={styles.viewButtons}>
         <LinkButton title={"Historial de reservas"} section={"/historial"} />
         <LinkButton title={"Mis favoritos"} section={""} />

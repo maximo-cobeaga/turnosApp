@@ -47,7 +47,6 @@ export interface Book {
 
 export default function index() {
   const { books, refreshBooks } = useAuth();
-  const [booksFilter, setBooksFilter] = useState<Book[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [refreshing, setRefreshing] = useState<boolean>(false);
 
