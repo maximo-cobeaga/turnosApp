@@ -38,7 +38,7 @@ export function CardBussines({ item, index }: CardBussinesProps) {
         onError={() => setLoading(false)}
         style={styles.cardImage}
         source={{
-          uri: "https://86ffe54c8fa1.ngrok.app/media/bussines_pic/default.jpg",
+          uri: "https://89f425aa09f4.ngrok.app/media/bussines_pic/default.jpg",
         }}
       />
       <View style={styles.cardBody}>

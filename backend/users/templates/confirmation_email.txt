@@ -1,0 +1,3 @@
+Por favor confirmar tu correo haciendo click en el siguiente link:
+
+http://127.0.0.1:8000/users/v1/confirm-email?token_id={{token_id}}

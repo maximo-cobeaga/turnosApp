@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
@@ -40,7 +42,7 @@ class CustomUser(AbstractBaseUser):
     ],)
     nacimiento = models.DateField()
     registro = models.DateTimeField(default=timezone.now)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
@@ -50,7 +52,7 @@ class CustomUser(AbstractBaseUser):
     REQUIRED_FIELDS = ['nombre', 'apellido', 'telefono', 'nacimiento']
 
     def __str__(self):
-        return f'{self.nombre} {self.apellido}'
+        return self.email
 
     def has_perm(self, perm, obj=None):
         """Define si el usuario tiene un permiso específico."""
@@ -59,3 +61,8 @@ class CustomUser(AbstractBaseUser):
     def has_module_perms(self, app_label):
         """Define si el usuario tiene permisos para acceder a una aplicación específica."""
         return True
+
+class EmailConfirmationToken(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    usuario = models.ForeignKey(CustomUser, to_field='email',on_delete=models.CASCADE)

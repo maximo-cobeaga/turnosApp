@@ -1,0 +1,9 @@
+{% if is_confirm == True %}
+<div class="notification is_success">
+    <p>Tu email esta confirmado</p>
+</div>
+{% else %}
+<div class="notification is_danger">
+    <p>Tu token de confirmacion expiro. Por favor solicita uno nuevo</p>
+</div>
+{% endif %}
