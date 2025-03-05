@@ -8,6 +8,7 @@ router = routers.DefaultRouter()
 urlpatterns = [
     path('', include(router.urls)),
     re_path('makeBook/', views.makeBook),
+    re_path('cancelBook/', views.cancelBook),
     re_path('getBooks/', views.getBooks),
     re_path('getBussines/', views.get_bussines),
     re_path('getFree/', views.getFree),
