@@ -2,6 +2,10 @@ from django.conf import settings
 from django.db import models
 import requests
 from django.db.models import OneToOneField
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 # Create your models here.
@@ -25,7 +29,7 @@ class Bussines(models.Model):
     longitud = models.FloatField(default=0)
 
     def save(self, *args, **kwargs):
-        key = 'AIzaSyAuAytAMqDEqaxiD07qxQt1fsfjMRhkSIU'
+        key = os.getenv('MAP_KEY')
         dir_format = self.direccion.replace(' ', '+')
         response = requests.get(f'https://maps.googleapis.com/maps/api/geocode/json?address={dir_format}&key={key}')
         if response.status_code == 200:
