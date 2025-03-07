@@ -20,6 +20,10 @@ from .serializers import CustomUserSerializers
 def register(request):
     serializer = CustomUserSerializers(data=request.data)
     if serializer.is_valid():
+        email = serializer.validated_data.get('email')
+
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({"Error", "El email ya esta en uso"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = serializer.save()
             token = EmailConfirmationToken.objects.create(usuario=user)
@@ -30,7 +34,7 @@ def register(request):
         except Exception as e:
             return Response({'Error': 'Ocurrio un error inesperado'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return Response({"user": request.data}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"user": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])

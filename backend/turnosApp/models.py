@@ -1,3 +1,7 @@
+import uuid
+from pickletools import uint4
+from uuid import uuid4
+
 from django.conf import settings
 from django.db import models
 import requests
@@ -18,7 +22,6 @@ class Categoria(models.Model):
 
 
 class Bussines(models.Model):
-    DoesNotExist = None
     nombre = models.CharField(max_length=100, null=False, blank=False)
     image = models.ImageField(upload_to='bussines_pic', default='bussimes_pic/default.jpg')
     codigo_postal = models.IntegerField(null=False, blank=False)
